@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Sort HTML Table with Pagination</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      background-color: #d3e2d8;
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      border-spacing: 0;
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #f4f4f4;
+      cursor: pointer;
+    }
+
+    th .sort-icon {
+      margin-left: 5px;
+      font-size: 0.8em;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .pagination button {
+      padding: 10px 15px;
+      margin: 0 5px;
+      border: 1px solid #ddd;
+      cursor: pointer;
+      background-color: #fff;
+      border-radius: 3px;
+    }
+
+    .pagination button.disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    .pagination button.active {
+      background-color: #9a9a9a;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      th, td {
+        padding: 8px;
+      }
+
+      .pagination button {
+        padding: 8px 12px;
+        font-size: 0.8em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header id="top">
+    <!-- <img src="bloodpng.png" alt="logo" width="4%" h align=""> -->
+    <nobr> <h1>Online Blood Bank <br>Management System</h1></nobr>
+     <nav>
+         <ul>
+             <li><a href="index.html">Home</a></li>
+             <li><a href="register.html">Register</a></li>
+             <li><a href="inventory.html">Inventory</a></li>
+             <nobr><li><a href="request.html">Request Blood</a></li></nobr>
+            <nobr> <li><a href="about.html">About Us</a></li></nobr>
+             <nobr><li><a href="contact.html">Contact Us</a></li></nobr>
+         </ul>
+     </nav>
+ </header>
+  <section id="inventory" class="form">
+    <h2>Blood Inventory</h2>
+    <p>Check our current blood stock to know the availability of different blood types.</p>
+    <iframe src="https://sheetsu.com/a/t/d289d044cdbd?embedded=true"
+    width="100%" height="600" frameBorder="0"
+    style="background: transparent; border: 1px solid #dedede;"></iframe>
+    </section><!--table id="data-table">
+      <thead>
+        <tr id="header-row"></tr>
+      </thead>
+      <tbody id="data-rows"></tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+  
+
+  <script>
+    let sortOrder = {};
+    let currentPage = 1;
+    const rowsPerPage = 10;
+    let currentData = [];
+
+    async function fetchSheetData() {
+      const url = 'https://sheetdb.io/api/v1/enh0bxd4ii5l7';
+      try {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        currentData = data;
+        renderTable();
+        renderPagination();
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        document.getElementById('data-rows').innerHTML = '<tr><td colspan="100%">Failed to load data. Please try again later.</td></tr>';
+      }
+    }
+
+    function renderTable() {
+      const table = document.getElementById('data-table');
+      const headerRow = document.getElementById('header-row');
+      const dataRows = document.getElementById('data-rows');
+
+      if (headerRow.children.length === 0) {
+        // Create header row
+        const headers = Object.keys(currentData[0]);
+        headers.forEach(header => {
+          const th = document.createElement('th');
+          th.innerHTML = `${header} <span class="sort-icon">&#x25B2;</span>`;
+          th.setAttribute('role', 'columnheader');
+          th.setAttribute('aria-sort', 'none');
+          th.addEventListener('click', () => sortTableByColumn(header));
+          headerRow.appendChild(th);
+        });
+      }
+
+      // Clear existing rows
+      dataRows.innerHTML = '';
+
+      // Create data rows for the current page
+      const startIndex = (currentPage - 1) * rowsPerPage;
+      const endIndex = startIndex + rowsPerPage;
+      const rowsToDisplay = currentData.slice(startIndex, endIndex);
+
+      rowsToDisplay.forEach(row => {
+        const tr = document.createElement('tr');
+        const headers = Object.keys(row);
+        headers.forEach(header => {
+          const td = document.createElement('td');
+          td.innerText = row[header];
+          tr.appendChild(td);
+        });
+        dataRows.appendChild(tr);
+      });
+    }
+
+    function renderPagination() {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+
+      const totalPages = Math.ceil(currentData.length / rowsPerPage);
+
+      if (currentPage > 1) {
+        const prevButton = document.createElement('button');
+        prevButton.innerText = 'Previous';
+        prevButton.addEventListener('click', () => {
+          currentPage--;
+          renderTable();
+          renderPagination();
+        });
+        pagination.appendChild(prevButton);
+      }
+
+      for (let i = 1; i <= totalPages; i++) {
+        const button = document.createElement('button');
+        button.innerText = i;
+        button.classList.add(i === currentPage ? 'active' : '');
+        button.addEventListener('click', () => {
+          currentPage = i;
+          renderTable();
+          renderPagination();
+        });
+        pagination.appendChild(button);
+      }
+
+      if (currentPage < totalPages) {
+        const nextButton = document.createElement('button');
+        nextButton.innerText = 'Next';
+        nextButton.addEventListener('click', () => {
+          currentPage++;
+          renderTable();
+          renderPagination();
+        });
+        pagination.appendChild(nextButton);
+      }
+    }
+
+    function sortTableByColumn(column) {
+      const headerIndex = Array.from(document.querySelectorAll('th')).findIndex(th => th.innerText.includes(column));
+      const isAscending = sortOrder[column] === 'asc';
+      sortOrder[column] = isAscending ? 'desc' : 'asc';
+
+      currentData.sort((a, b) => {
+        const aText = a[Object.keys(a)[headerIndex]];
+        const bText = b[Object.keys(b)[headerIndex]];
+
+        if (!isNaN(aText) && !isNaN(bText)) {
+          return isAscending ? Number(aText) - Number(bText) : Number(bText) - Number(aText);
+        }
+
+        return isAscending ? aText.localeCompare(bText) : bText.localeCompare(aText);
+      });
+
+      renderTable();
+      renderPagination();
+      updateSortIcons();
+    }
+
+    function updateSortIcons() {
+      const headers = document.querySelectorAll('th');
+      headers.forEach(header => {
+        const column = header.innerText.split(' ')[0];
+        const icon = header.querySelector('.sort-icon');
+        if (sortOrder[column] === 'asc') {
+          icon.innerHTML = '&#x25B2;'; // Up arrow
+          header.setAttribute('aria-sort', 'ascending');
+        } else {
+          icon.innerHTML = '&#x25BC;'; // Down arrow
+          header.setAttribute('aria-sort', 'descending');
+        }
+      });
+    }
+
+    fetchSheetData();
+  </script-->
+</body>
+</html>
