@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Blood Bank Management System</title>
+    <link rel="shortcut icon" href="bloodpng.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body><center>
+    <header id="top">
+        <!-- <img src="bloodpng.png" alt="logo" width="4%" h align=""> -->
+        <nobr> <h1>Online Blood Bank <br>Management System</h1></nobr>
+         <nav>
+             <ul>
+                 <li><a href="index.html">Home</a></li>
+                 <li><a href="register.html">Register</a></li>
+                 <li><a href="inventory.html">Inventory</a></li>
+                 <nobr><li><a href="request.html">Request Blood</a></li></nobr>
+                <nobr> <li><a href="about.html">About Us</a></li></nobr>
+                 <nobr><li><a href="contact.html">Contact Us</a></li></nobr>
+             </ul>
+         </nav>
+     </header>
+<section id="request" class="form">
+    <h2>Request Blood</h2>
+    <p>If you need blood , please fill out the form below.</p>
+    <form id="requestForm"  name="myfor" method="post">
+        <label for="rname">Name:</label>
+        <input placeholder="Name" type="text" id="rname" name="Name" required>
+
+        <label for="rdate">Date:</label>
+        <input type="date" id="rdate" name="Date" required>
+
+        <label for="address">Place:</label>
+        <input placeholder="Place" type="text" name="Place" id="rplace" required>
+
+        <label for="bloodType">Blood Type:</label>
+        <select id="bloodType" name="BloodType" required>
+            <option selected hidden >select</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <button type="submit">Request</button>
+    </form>
+</section></center>
+
+</body>
+
+  <script>
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxRjr7LXjzQBZ89TTk8P8YgMYaINy7J01mzDGnyeGsxPVUB4IgG-5qmjMMzFuF0ji_6/exec'
+    const form = document.forms['myfor']
+    
+    form.addEventListener('submit', e => {
+        e.preventDefault()
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Requested! We will contact you soon...");
+                form.reset();  // Reset the form fields
+            })
+            .catch(error => console.error('Error!', error.message))
+    })
+</script>
+
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Blood Bank Management System</title>
+    <link rel="shortcut icon" href="bloodpng.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+  
+</head>
+<body>
+  <header id="top">
+    <!-- <img src="bloodpng.png" alt="logo" width="4%" h align=""> -->
+    <nobr> <h1>Online Blood Bank <br>Management System</h1></nobr>
+     <nav>
+         <ul>
+             <li><a href="index.html">Home</a></li>
+             <li><a href="register.html">Register</a></li>
+             <li><a href="inventory.html">Inventory</a></li>
+             <nobr><li><a href="request.html">Request Blood</a></li></nobr>
+            <nobr> <li><a href="about.html">About Us</a></li></nobr>
+             <nobr><li><a href="contact.html">Contact Us</a></li></nobr>
+         </ul>
+     </nav>
+ </header>
+  <center>
+<section id="register" style="margin: 200px 100px 100px;">
+  <h2>Register as a Donor</h2>
+    <p>Join our community of life-savers. Register to donate blood and help save lives.</p>
+    <form name="myform"  id="registrationForm"  method="post" >
+        <label for="name">Name:</label>
+        <input placeholder="Name" type="text" id="name" name="Name" required>
+
+        <label for="contactno">Contact NO:</label>
+        <input placeholder="Phone no" type="text" id="contactno" name="Contactno" required>
+
+        <label for="age">Age:</label>
+        <input placeholder="Age" type="number" min="12" max="80" id="age" name="Age" required>
+
+        <label for="city">City/Village:</label>
+        <input placeholder="City" type="text" name="City" id="city" required>
+
+        <label for="district">District:</label>
+        <input placeholder="District" type="text" name="District" id="district" required>
+
+        <label for="bloodtype">Blood Type:</label>
+        <select id="bloodtype" name="Bloodtype" required>
+            <option selected hidden >select</option>
+            <option value="A+">A+</option>
+            <option value="A-">A-</option>
+            <option value="B+">B+</option>
+            <option value="B-">B-</option>
+            <option value="O+">O+</option>
+            <option value="O-">O-</option>
+            <option value="AB+">AB+</option>
+            <option value="AB-">AB-</option>
+        </select>
+        <button type="submit" >Register</button>
+    </form>
+</section></center>
+</body>
+<script>//https://script.google.com/macros/s/AKfycbwwDxJ82gfHKpN9ERTeg-281dkxxCAlcjXE1oXJeOTbyPU9wsTlelakwxNO8j-pQFCf/exec
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbzJr7PKxxtNSy6DES5CBf1ES19-pYWRFOPnitZCoY9GLGeJ3xiQ7191MPhG8E9VUEQq/exec'
+  const form = document.forms['myform']
+  
+  form.addEventListener('submit', e => {
+      e.preventDefault()
+      fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+          .then(response => {
+              alert("Thanks for contacting us! We will contact you soon.");
+              form.reset();  // Reset the form fields
+          })
+          .catch(error => console.error('Error!', error.message))
+  })
+</script>
+
+</html>
